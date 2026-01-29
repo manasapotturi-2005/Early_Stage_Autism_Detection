@@ -28,13 +28,21 @@ function App() {
   };
 
 const handleSubmit = async () => {
-  // FORCE the SAME order used in training
-  const orderedKeys = [
-    "A1","A2","A3","A4","A5",
-    "A6","A7","A8","A9","A10"
+  // HARD LOCK feature order (matches training)
+  const features = [
+    Number(answers.A1),
+    Number(answers.A2),
+    Number(answers.A3),
+    Number(answers.A4),
+    Number(answers.A5),
+    Number(answers.A6),
+    Number(answers.A7),
+    Number(answers.A8),
+    Number(answers.A9),
+    Number(answers.A10),
   ];
 
-  const features = orderedKeys.map(key => Number(answers[key]));
+  console.log("Sending features:", features); // DEBUG
 
   try {
     const response = await fetch(
@@ -42,13 +50,12 @@ const handleSubmit = async () => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ features })
+        body: JSON.stringify({ features }),
       }
     );
 
     const data = await response.json();
 
-    // MODEL DECIDES — NOTHING ELSE
     if (data.prediction === 1) {
       setResult("Autism Detected (Positive)");
     } else {
