@@ -5,7 +5,6 @@ import os
 
 app = Flask(__name__)
 
-# Load trained model
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
@@ -15,16 +14,18 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    try:
-        data = request.json
-        features = np.array(data["features"]).reshape(1, -1)
+    data = request.json
+    features = np.array(data["features"]).reshape(1, -1)
+    prediction = model.predict(features)[0]
+    return jsonify({"prediction": int(prediction)})
 
-        prediction = model.predict(features)[0]
-
-        return jsonify({"prediction": int(prediction)})
-
-    except Exception as e:
-        return jsonify({"error": str(e)})
+# ✅ ADD THIS
+@app.route("/test", methods=["GET"])
+def test():
+    return jsonify({
+        "all_yes": int(model.predict([[1,1,1,1,1,1,1,1,1,1]])[0]),
+        "all_no": int(model.predict([[0,0,0,0,0,0,0,0,0,0]])[0])
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
