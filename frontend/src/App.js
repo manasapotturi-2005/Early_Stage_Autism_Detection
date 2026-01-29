@@ -27,18 +27,20 @@ function App() {
     setAnswers({ ...answers, [e.target.name]: e.target.value });
   };
 
-  // ✅ FINAL CORRECT LOGIC
+  // ✅ FINAL LOGIC
   const handleSubmit = async () => {
-    const features = Object.values(answers).map(Number);
+    // Always maintain correct order
+    const orderedKeys = ["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10"];
+    const features = orderedKeys.map(key => Number(answers[key]));
 
-    // Rule override: If ALL answers are Yes → Autism
+    // Rule override: if ALL are Yes → Autism
     const allYes = features.every(v => v === 1);
     if (allYes) {
       setResult("Autism Detected (Positive)");
       return;
     }
 
-    // Otherwise let ML model decide
+    // Otherwise ML decides
     try {
       const response = await fetch(
         "https://early-stage-autism-detection.onrender.com/api/predict",
