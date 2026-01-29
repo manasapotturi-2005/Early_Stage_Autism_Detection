@@ -28,18 +28,13 @@ function App() {
   };
 
   const handleSubmit = async () => {
+  // ✅ FORCE SAME ORDER AS TRAINING DATA
+  const orderedKeys = [
+    "A1","A2","A3","A4","A5",
+    "A6","A7","A8","A9","A10"
+  ];
 
-  // Always enforce correct order
-  const orderedKeys = ["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10"];
-  const features = orderedKeys.map(k => Number(answers[k]));
-
-  console.log("Sending features:", features); // DEBUG LINE
-
-  // If all yes → autism (guaranteed behavior)
-  if (features.every(v => v === 1)) {
-    setResult("Autism Detected (Positive)");
-    return;
-  }
+  const features = orderedKeys.map(key => Number(answers[key]));
 
   try {
     const response = await fetch(
@@ -52,19 +47,19 @@ function App() {
     );
 
     const data = await response.json();
-    console.log("Model returned:", data); // DEBUG LINE
 
+    // ✅ MODEL DECIDES — NO MANUAL RULES
     if (data.prediction === 1) {
       setResult("Autism Detected (Positive)");
     } else {
       setResult("No Autism Detected (Negative)");
     }
 
-  } catch (err) {
+  } catch (error) {
     setResult("Error connecting to server");
-    console.error(err);
   }
 };
+
 
   return (
     <div style={styles.container}>
