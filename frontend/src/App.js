@@ -29,27 +29,34 @@ function App() {
 
   // ✅ ML-based prediction (NO score logic anymore)
   const handleSubmit = async () => {
-    const features = Object.values(answers).map(Number);
+  const features = Object.values(answers).map(Number);
 
-    try {
-      const response = await fetch("https://early-stage-autism-detection.onrender.com/api/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ features })
-      });
+  // ✅ Rule override: if all answers are YES (all 1s)
+  const allYes = features.every(v => v === 1);
+  if (allYes) {
+    setResult("Autism Detected (Positive)");
+    return;
+  }
 
-      const data = await response.json();
+  try {
+    const response = await fetch("https://early-stage-autism-detection.onrender.com/api/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ features })
+    });
 
-      if (data.prediction === 1) {
-        setResult("Autism Detected (Positive)");
-      } else {
-        setResult("No Autism Detected (Negative)");
-      }
+    const data = await response.json();
 
-    } catch (error) {
-      setResult("Error connecting to server");
+    if (data.prediction === 1) {
+      setResult("Autism Detected (Positive)");
+    } else {
+      setResult("No Autism Detected (Negative)");
     }
-  };
+
+  } catch (error) {
+    setResult("Error connecting to server");
+  }
+};
 
   return (
     <div style={styles.container}>
