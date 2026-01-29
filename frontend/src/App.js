@@ -27,8 +27,8 @@ function App() {
     setAnswers({ ...answers, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
-  // ✅ FORCE SAME ORDER AS TRAINING DATA
+const handleSubmit = async () => {
+  // FORCE the SAME order used in training
   const orderedKeys = [
     "A1","A2","A3","A4","A5",
     "A6","A7","A8","A9","A10"
@@ -48,7 +48,7 @@ function App() {
 
     const data = await response.json();
 
-    // ✅ MODEL DECIDES — NO MANUAL RULES
+    // MODEL DECIDES — NOTHING ELSE
     if (data.prediction === 1) {
       setResult("Autism Detected (Positive)");
     } else {
@@ -59,6 +59,7 @@ function App() {
     setResult("Error connecting to server");
   }
 };
+
 
 
   return (
