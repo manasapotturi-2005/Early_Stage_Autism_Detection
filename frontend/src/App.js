@@ -27,42 +27,44 @@ function App() {
     setAnswers({ ...answers, [e.target.name]: e.target.value });
   };
 
-  // ✅ FINAL LOGIC
   const handleSubmit = async () => {
-    // Always maintain correct order
-    const orderedKeys = ["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10"];
-    const features = orderedKeys.map(key => Number(answers[key]));
 
-    // Rule override: if ALL are Yes → Autism
-    const allYes = features.every(v => v === 1);
-    if (allYes) {
-      setResult("Autism Detected (Positive)");
-      return;
-    }
+  // Always enforce correct order
+  const orderedKeys = ["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10"];
+  const features = orderedKeys.map(k => Number(answers[k]));
 
-    // Otherwise ML decides
-    try {
-      const response = await fetch(
-        "https://early-stage-autism-detection.onrender.com/api/predict",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ features })
-        }
-      );
+  console.log("Sending features:", features); // DEBUG LINE
 
-      const data = await response.json();
+  // If all yes → autism (guaranteed behavior)
+  if (features.every(v => v === 1)) {
+    setResult("Autism Detected (Positive)");
+    return;
+  }
 
-      if (data.prediction === 1) {
-        setResult("Autism Detected (Positive)");
-      } else {
-        setResult("No Autism Detected (Negative)");
+  try {
+    const response = await fetch(
+      "https://early-stage-autism-detection.onrender.com/api/predict",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ features })
       }
+    );
 
-    } catch (error) {
-      setResult("Error connecting to server");
+    const data = await response.json();
+    console.log("Model returned:", data); // DEBUG LINE
+
+    if (data.prediction === 1) {
+      setResult("Autism Detected (Positive)");
+    } else {
+      setResult("No Autism Detected (Negative)");
     }
-  };
+
+  } catch (err) {
+    setResult("Error connecting to server");
+    console.error(err);
+  }
+};
 
   return (
     <div style={styles.container}>

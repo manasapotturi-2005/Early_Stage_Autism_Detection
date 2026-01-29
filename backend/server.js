@@ -40,9 +40,10 @@ app.post("/api/predict", async (req, res) => {
   try {
     // 🔁 Call Flask ML API (REPLACE THIS URL)
     const flaskResponse = await axios.post(
-      "https://autism-ml-api.onrender.com/predict",
-      { features: req.body.features }
-    );
+  "https://autism-ml-api.onrender.com/predict",
+  { features: req.body.features }
+);
+
 
     const prediction = flaskResponse.data.prediction;
 
