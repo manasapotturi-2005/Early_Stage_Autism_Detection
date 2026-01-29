@@ -3,17 +3,17 @@ import "./App.css";
 
 function App() {
   const questions = {
-  A1: "Has difficulty adapting to new environments or changes",
-  A2: "Has difficulty with imaginative or pretend play",
-  A3: "Often does not respond when their name is called",
-  A4: "Has difficulty with social interaction",
-  A5: "Has difficulty with communication",
-  A6: "Pays unusual attention to small details",
-  A7: "Is sensitive to sound, light, or touch",
-  A8: "Strongly prefers routines and becomes upset with changes",
-  A9: "Has difficulty understanding others' emotions",
-  A10: "Has difficulty doing more than one task at a time"
-};
+    A1: "Has difficulty adapting to new environments or changes",
+    A2: "Has difficulty with imaginative or pretend play",
+    A3: "Often does not respond when their name is called",
+    A4: "Has difficulty with social interaction",
+    A5: "Has difficulty with communication",
+    A6: "Pays unusual attention to small details",
+    A7: "Is sensitive to sound, light, or touch",
+    A8: "Strongly prefers routines and becomes upset with changes",
+    A9: "Has difficulty understanding others' emotions",
+    A10: "Has difficulty doing more than one task at a time"
+  };
 
   const initialState = Object.keys(questions).reduce((acc, key) => {
     acc[key] = "0";
@@ -27,36 +27,40 @@ function App() {
     setAnswers({ ...answers, [e.target.name]: e.target.value });
   };
 
-  // ✅ ML-based prediction (NO score logic anymore)
+  // ✅ FINAL CORRECT LOGIC
   const handleSubmit = async () => {
-  const features = Object.values(answers).map(Number);
+    const features = Object.values(answers).map(Number);
 
-  // ✅ Rule override: if all answers are YES (all 1s)
-  const allYes = features.every(v => v === 1);
-  if (allYes) {
-    setResult("Autism Detected (Positive)");
-    return;
-  }
-
-  try {
-    const response = await fetch("https://early-stage-autism-detection.onrender.com/api/predict", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ features })
-    });
-
-    const data = await response.json();
-
-    if (data.prediction === 1) {
+    // Rule override: If ALL answers are Yes → Autism
+    const allYes = features.every(v => v === 1);
+    if (allYes) {
       setResult("Autism Detected (Positive)");
-    } else {
-      setResult("No Autism Detected (Negative)");
+      return;
     }
 
-  } catch (error) {
-    setResult("Error connecting to server");
-  }
-};
+    // Otherwise let ML model decide
+    try {
+      const response = await fetch(
+        "https://early-stage-autism-detection.onrender.com/api/predict",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ features })
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.prediction === 1) {
+        setResult("Autism Detected (Positive)");
+      } else {
+        setResult("No Autism Detected (Negative)");
+      }
+
+    } catch (error) {
+      setResult("Error connecting to server");
+    }
+  };
 
   return (
     <div style={styles.container}>
