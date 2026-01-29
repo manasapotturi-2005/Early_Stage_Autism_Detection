@@ -33,7 +33,8 @@ function App() {
     const features = Object.values(answers).map(Number);
 
     try {
-      const response = await fetch("https://YOUR-BACKEND.onrender.com/api/predict", {
+      const response = await fetch("https://early-stage-autism-detection.onrender.com/api/predict", {
+
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ features })
