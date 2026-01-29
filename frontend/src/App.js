@@ -3,18 +3,17 @@ import "./App.css";
 
 function App() {
   const questions = {
-  A1: "Has difficulty adapting to new environments or changes",
-  A2: "Has difficulty with imaginative or pretend play",
-  A3: "Often does not respond when their name is called",
-  A4: "Has difficulty with social interaction",
-  A5: "Has difficulty with communication",
-  A6: "Pays unusual attention to small details",
-  A7: "Is sensitive to sound, light, or touch",
-  A8: "Strongly prefers routines and becomes upset with changes",
-  A9: "Has difficulty understanding others' emotions",
-  A10: "Has difficulty doing more than one task at a time"
-};
-
+    A1: "Notices small sounds when others do not",
+    A2: "Focuses more on whole picture than details",
+    A3: "Can do more than one thing at once",
+    A4: "Understands how others feel easily",
+    A5: "Finds it easy to make new friends",
+    A6: "Understands jokes easily",
+    A7: "Likes doing things in the same way every time",
+    A8: "Finds social situations difficult",
+    A9: "Notices details others miss",
+    A10: "Finds it hard to understand others' intentions"
+  };
 
   const initialState = Object.keys(questions).reduce((acc, key) => {
     acc[key] = "0";
@@ -34,7 +33,6 @@ function App() {
 
     try {
       const response = await fetch("https://early-stage-autism-detection.onrender.com/api/predict", {
-
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ features })
