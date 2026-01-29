@@ -38,16 +38,15 @@ app.get("/", (req, res) => {
 
 app.post("/api/predict", async (req, res) => {
   try {
-    // 🔁 Call Flask ML API (REPLACE THIS URL)
-    const flaskResponse = await axios.post(
-  "https://autism-ml-api.onrender.com/predict",
-  { features: req.body.features }
-);
+    console.log("Received features:", req.body.features);
 
+    const flaskResponse = await axios.post(
+      "https://autism-ml-api.onrender.com/predict",
+      { features: req.body.features }
+    );
 
     const prediction = flaskResponse.data.prediction;
 
-    // Save to MongoDB
     await Result.create({
       answers: req.body.features,
       prediction: prediction
@@ -60,6 +59,7 @@ app.post("/api/predict", async (req, res) => {
     res.status(500).json({ error: "Prediction failed" });
   }
 });
+
 
 // -------------------
 app.listen(4000, () => {
